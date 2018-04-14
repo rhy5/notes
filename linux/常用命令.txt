@@ -1,0 +1,36 @@
+NAT 转发
+iptables -t nat -A POSTROUTING -s 10.92.65.3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.92.65.4 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.92.65.5 -j MASQUERADE
+修改mysql root 密码
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'De&GmNb/vbjnhJ:?h49L';
+
+GRANT ALL PRIVILEGES ON *.* TO 'rooster'@'%' IDENTIFIED BY '3ur;olJ@LXu~@#Dc@2tt' WITH GRANT OPTION;
+
+创建同步账户
+create user 'sstuser'@'10.92.65.%' identified by 'UHfj=8D9Y72Kvx+n';
+GRANT REPLICATION SLAVE ON *.* TO 'sstuser'@'10.92.65.%';
+
+iptables 开端口
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+
+percona-xtrabackup 安装
+
+ 146   wget http://www.percona.com/downloads/percona-release/redhat/0.1-4/percona-release-0.1-4.noarch.rpm
+  147  rpm -ivh percona-release-0.1-4.noarch.rpm
+  148  yum install percona-xtrabackup-24
+  149  yum install percona-xtrabackup-23
+  150  yum list | grep percona
+  151  yum install percona-xtrabackup-24
+  152  wget http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+  153  rpm -ivh epel-release-6-8.noarch.rpm
+  154  yum install percona-xtrabackup-24
+
+
+--replicate-check-only
+pt-table-checksum  --nocheck-replication-filters --no-check-binlog-format --replicate=percona.checksums --databases=bc  h=192.168.100.31,u=root,p='Mama3860!',P=3306
+
+
+pt-table-sync  --print  --verbose --sync-to-master --replicate=percona.checksums h=192.168.100.32,u=root,p='Mama3860!',P=3306 --databases=bc --check-triggers --foreign-key-checks --unique-checks
+
+pt-table-sync  --execute --sync-to-master --replicate=percona.checksums --charset=utf8  h=192.168.100.32,u=root,p='Mama3860!',P=3306 --databases=bc  --check-triggers --foreign-key-checks --unique-checks

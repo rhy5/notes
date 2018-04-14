@@ -1,0 +1,47 @@
+列出所有有图文章
+   {dede:sql sql="SELECT * FROM dede_archives where litpic!='' limit 10"}
+       <li>
+           https://www.yangshengmima.com/[field:id runphp='yes'] $id=@me;@me='';$url=GetOneArchive($id);@me=$url['arcurl'];[/field:id]
+        </li>
+    {/dede:sql}
+   {dede:sql sql="SELECT * FROM dede_archives where litpic!='' limit 100"}
+       <li>
+          [field:id runphp='yes'] $id=@me;@me='';$url=GetOneArchive($id);@me=$url['arcurl'];[/field:id]
+        </li>
+    {/dede:sql}
+
+
+删除缩略图为空的文章
+delete from dede_addonarticle where aid in (select id from dede_archives where litpic='' );
+delete from dede_archives where litpic='';
+
+主动推送百度
+sed -n '5001,7000p' urls.txt >1.txt
+curl -H 'Content-Type:text/plain' --data-binary @1.txt "http://data.zz.baidu.com/urls?site=www.yangshengmima.com&token=waavFJtlRsi89XqX"
+
+
+<script>
+
+(function(){
+
+    var bp = document.createElement(‘script’);
+
+    bp.src = ’//push.zhanzhang.baidu.com/push.js’;
+
+    var s = document.getElementsByTagName(“script”)[0];
+
+    s.parentNode.insertBefore(bp, s);
+
+})();
+
+</script>
+
+需求：
+       随机sql
+SELECT *
+FROM `autoSetAlt` AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM `autoSetAlt`)-(SELECT MIN(id) FROM `autoSetAlt`))+(SELECT MIN(id) FROM `autoSetAlt`)) AS id) AS t2
+WHERE t1.id >= t2.id
+ORDER BY t1.id LIMIT 1;
+
+maji
+k5O1F7dy1a
